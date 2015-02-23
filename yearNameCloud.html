@@ -1,0 +1,158 @@
+<html>
+<head>
+	<link rel="stylesheet" href="/static/iThing.css" type="text/css" />
+	<link rel="stylesheet" href="/static/yearNameCloud.css" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="/static/d3.layout.cloud.js"></script>
+	<script src="/static/jQDateRangeSlider-min.js"></script>
+	<script src="/static/jquery-dateFormat.min.js"></script>
+	<script src="/static/yearData.json" type="text/javascript"></script>
+	<script src="/static/yearNameCloud.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+	<div class='controls_wrapper'>
+		<div id="slider"></div>
+
+		<div class='gender_buttons'>
+			<div class='all_buttons'>
+				<a href='#'><div class='female'>Girls</div></a>
+				<a href='#'><div class='male'>Boys</div></a>
+				<a href='#'><div class='both'>Both</div></a>
+			</div>
+		</div>
+	</div>
+
+	<div id='vis'></div>
+	<div id='angles'></div>
+
+	<div class="data_container">
+
+	</div>
+
+<script type="text/javascript">
+
+var makeWords = function(wordlist) {
+	var w = 1200,
+    	h = 900;
+	console.log(wordlist)
+	$('svg').remove();
+
+	var fill = d3.scale.category20();
+
+	d3.layout.cloud().timeInterval(10)
+		.size([w, h])
+		.words(wordlist.map(function(d) {
+			return {text: d, size: 1 + Math.random() * 20};
+		}))
+		.padding(1)
+		.rotate(function() { return ~~(Math.random() * 2) * 90; })
+		.font("Impact")
+		.fontSize(function(d) { return d.size; })
+		.on("end", draw)
+		.start();
+
+	function draw(words) {
+		d3.select("body").append("svg")
+			.attr("width", 50)
+			.attr("height", 25)
+		.append("g")
+			.attr("transform", "translate(" + [w >> 1, h >> 1] + ")")
+		.selectAll("text")
+			.data(words)
+		.enter().append("text")
+			.style("font-size", function(d) { return d.size + "px"; })
+			.style("font-family", "Impact")
+			.style("fill", function(d, i) { return fill(i); })
+			.attr("text-anchor", "middle")
+			.attr("transform", function(d) {
+				return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+			})
+			.text(function(d) { return d.text; });
+	}
+}
+
+	var d = new Date();
+	$("#slider").dateRangeSlider({
+		bounds:{
+		min: new Date(1880, 01, 01),
+		max: new Date(2012, 12, 31)
+		},
+		defaultValues: {
+		min: new Date(1880, 01, 01),
+		max: new Date(2012, 12, 31)
+		},
+		arrows: false,
+		formatter:function(val){
+			var year = val.getFullYear();
+
+			return year;
+		},
+		range:{
+			min: {years: 1}
+		},
+
+	});
+
+	var button_clicked = 'both';
+	var date_min = '1880';
+	var date_max = '2013'
+	var current_data;
+	
+	$('.gender_buttons a div').on('click', function(){
+		var button_start = 0;
+		var button_year_diff = (date_max-date_min) + 1;
+		var button_sorted_data;
+		current_data = {};
+		button_clicked = $(this).attr('class');
+
+		var button_all_data = rangeData(button_start, button_year_diff, parseInt(date_min), button_clicked);
+
+		var button_sorted_data = sortData(button_all_data);
+		button_all_data = {};
+		current_data = button_sorted_data;
+		// showData(button_sorted_data);
+
+		var buttonPersonList = [];
+		for (person in current_data) {
+  			buttonPersonList.push(current_data[person][0]);
+  		}
+		makeWords(buttonPersonList);
+
+	});
+
+	$("#slider").bind("userValuesChanged", function(e, slider_data){
+		console.log("Values just changed. min: " + slider_data.values.min + " max: " + slider_data.values.max);
+		date_min = $.format.date(slider_data.values.min, 'yyyy');
+		date_max = $.format.date(slider_data.values.max, 'yyyy');
+		var year_diff = (date_max-date_min) + 1;
+		var start = 0;
+		current_data = {};
+
+		var all_data = rangeData(start, year_diff, parseInt(date_min), button_clicked);
+
+		var sortedData = sortData(all_data);
+		all_data = {};
+		current_data = sortedData;
+
+		var personList = [];
+		for (person in current_data) {
+  			personList.push(current_data[person][0]);
+  		}
+
+  		makeWords(personList);
+		// showData(sortedData);
+	});
+
+
+
+
+</script>
+
+
+</body>
+
+</html>
