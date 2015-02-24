@@ -45,7 +45,19 @@ body {
 
 .cloud_container {
 	margin: 0 auto;
-	width: 90%;
+	width: 95%;
+}
+
+.form_container {
+	margin: 0px auto;
+	width: 50%;
+	text-align: center;
+}
+
+.name_container {
+	text-align: center;
+	font-size: 40px;
+	margin: 20px 0 0;
 }
 
 

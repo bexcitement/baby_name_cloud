@@ -25,6 +25,11 @@
 				<a href='#'><div class='both'>Both</div></a>
 			</div>
 		</div>
+		<div class='form_container'>
+			First name:<input type="text" class='fname' name="fname" placeholder="Sherry">
+			<input onclick='searchName()' class='submit' type="submit" value="Submit">
+		</div>
+
 
 		<div class='display_options'>
 			<div class='all_displays'>
@@ -33,6 +38,8 @@
 			</div>
 		</div>
 	</div>
+
+	<div class='name_container'></div>
 
 	<div class="cloud_container toggle_container">
 
@@ -48,7 +55,6 @@ var makeWords = function(wordlist, numTotal) {
 	var w = 1200,
     	h = 900;
 	$('svg').remove();
-	console.log('hai');
 
 	var fill = d3.scale.category20();
 
@@ -57,7 +63,7 @@ var makeWords = function(wordlist, numTotal) {
 		.words(wordlist.map(function(d) {
 			return {text: d[0], size: 20, other_size: d[1]};
 		}))
-		.padding(4)
+		.padding(2)
 		.rotate(function() { return ~~(Math.random() * 2) * 90; })
 		.font("'Raleway'")
 		.fontSize(function(d) { console.log('test'); return d.size; })
@@ -70,18 +76,17 @@ var makeWords = function(wordlist, numTotal) {
 			.attr("width", "100%")
 			.attr("height", "200%")
 		.append("g")
-			.attr("transform", "translate(520, 420)")
+			.attr("transform", "translate(600, 500)")
 			.attr("width", "500px")
 			// .attr("stroke-width", 5)
 		.selectAll("text")
 			.data(words)
 		.enter().append("text")
 			.style("font-size", function(d) { 
-				console.log(numTotal);
 				var font_size = d.other_size; 
-				var new_size = Math.ceil((font_size/numTotal) * 2000);
+				var new_size = Math.ceil((font_size/numTotal) * 3000);
 				if (new_size > 100) {
-					new_size = 100;
+					new_size = 70;
 				}
 				if (new_size < 16) {
 					new_size = 16;
@@ -115,10 +120,6 @@ var makeWords = function(wordlist, numTotal) {
 
 			return year;
 		},
-		range:{
-			min: {years: 1}
-		},
-
 	});
 
 	var button_clicked = 'both';
@@ -133,7 +134,7 @@ var makeWords = function(wordlist, numTotal) {
 		current_data = {};
 		button_clicked = $(this).attr('class');
 
-		var button_all_data = rangeData(button_start, button_year_diff, parseInt(date_min), button_clicked);
+		var button_all_data = rangeData(button_start, button_year_diff, parseInt(date_min), button_clicked, undefined);
 
 		var button_sorted_data = sortData(button_all_data);
 		button_all_data = {};
@@ -160,7 +161,7 @@ var makeWords = function(wordlist, numTotal) {
 		var start = 0;
 		current_data = {};
 
-		var all_data = rangeData(start, year_diff, parseInt(date_min), button_clicked);
+		var all_data = rangeData(start, year_diff, parseInt(date_min), button_clicked, undefined);
 
 		var sortedData = sortData(all_data);
 		all_data = {};
