@@ -56,12 +56,24 @@ var sortData = function(data_dict) {
 	    return second[1] - first[1];
 	});
 
-	return items.slice(0, 1001);
+	return items.slice(0, 251);
 }
 
 var showData = function(sortedData){
+	console.log('sort it!')
 	$('.data_container').empty();
+	var numTotal = 0;
+
+	for (num in sortedData) {
+		numTotal += sortedData[num][1]
+	}
 	for (item in sortedData) {
-		$('.data_container').append('<div class="person_data">' + sortedData[item][0] + ' : ' + sortedData[item][1] + '</div>');
+		$('.data_container').append('<div class="person_data">' + sortedData[item][0] + ' : ' + sortedData[item][1] + ' (' + (((sortedData[item][1])/numTotal) *100).toFixed(2) + '%)</div>');
 	}
 }
+
+var searchSingleName = function(nameValue) {
+	console.log(nameValue);
+}
+
+
