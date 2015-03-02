@@ -40,6 +40,7 @@
 	</div>
 
 	<div class='name_container'></div>
+	<div class='years_container'></div>
 
 	<div class="cloud_container toggle_container">
 
@@ -123,14 +124,24 @@ var makeWords = function(wordlist, numTotal) {
 	});
 
 	var button_clicked = 'both';
-	var date_min = '1880';
-	var date_max = '2013'
+	var date_min;
+	var date_max;
 	var current_data;
 	
 	$('.gender_buttons a div').on('click', function(){
 		var button_start = 0;
-		var button_year_diff = (date_max-date_min) + 1;
 		var button_sorted_data;
+		if (date_min === undefined && date_max === undefined) {
+			date_min = '1880';
+			date_max = '2013';
+		}
+		// console.log(date_min);
+		// console.log(date_max);
+		date_min = $.format.date($('#slider').dateRangeSlider("bounds").min, 'yyyy');
+		date_max = $.format.date($('#slider').dateRangeSlider("bounds").max, 'yyyy');
+		console.log(date_min);
+		console.log(date_max);
+		var button_year_diff = (date_max-date_min) + 1;
 		current_data = {};
 		button_clicked = $(this).attr('class');
 
@@ -150,6 +161,18 @@ var makeWords = function(wordlist, numTotal) {
 		showData(button_sorted_data);
 
 		$('.display_options').show();
+		$('.years_container').text('from ' + date_min + ' to ' + date_max);
+		
+		if (button_clicked === 'female') {
+			$('.name_container').text('Girls');
+		}
+		else if (button_clicked === 'male'){
+		$('.name_container').text('Boys');
+		}
+
+		else if (button_clicked === 'both'){
+			$('.name_container').text('Girls & Boys');
+		}
 
 	});
 
@@ -159,11 +182,28 @@ var makeWords = function(wordlist, numTotal) {
 		date_max = $.format.date(slider_data.values.max, 'yyyy');
 		var year_diff = (date_max-date_min) + 1;
 		var start = 0;
+		var currentName;
+		var sortedData;
+		var all_data;
 		current_data = {};
 
-		var all_data = rangeData(start, year_diff, parseInt(date_min), button_clicked, undefined);
+		if ($('.name_container').text() !== ' ' && $('.name_container').text() !== 'Girls' && $('.name_container').text() !== 'Boys' && $('.name_container').text() !== 'Girls & Boys') {
+			currentName = $('.name_container').text();
+		}
 
-		var sortedData = sortData(all_data);
+		if (currentName) {
+			console.log('string')
+			all_data = nameRangeData(start, year_diff, parseInt(date_min), button_clicked, currentName);
+			sortedData = sortNameData(all_data);
+			showNameData(sortedData);
+		}
+		else {
+			console.log('no string!')
+			all_data = rangeData(start, year_diff, parseInt(date_min), button_clicked, undefined);
+			sortedData = sortData(all_data);
+			showData(sortedData);
+		}
+
 		all_data = {};
 		current_data = sortedData;
 
@@ -175,8 +215,22 @@ var makeWords = function(wordlist, numTotal) {
   		}
 
   		makeWords(personList, total);
-		showData(sortedData);
 		$('.display_options').show();
+		$('.years_container').text('from ' + date_min + ' to ' + date_max);
+		
+		if (currentName) {
+			$('.name_container').text(currentName);
+		}
+		else if (button_clicked === 'female') {
+			$('.name_container').text('Girls');
+		}
+		else if (button_clicked === 'male'){
+		$('.name_container').text('Boys');
+		}
+
+		else if (button_clicked === 'both'){
+			$('.name_container').text('Girls & Boys');
+		}
 	});
 
 	$('.all_displays a').on('click', function(){

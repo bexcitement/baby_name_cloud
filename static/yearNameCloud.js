@@ -43,9 +43,7 @@ var getNameData = function(year, gender, name) {
 		nameData = [year.toString(), yearData['yob' + year.toString()][gender][name]]
 	}
 
-
 	return nameData
-
 }
 
 var rangeData = function(start, year_diff, date_min, gender, name) {
@@ -151,9 +149,6 @@ var searchSingleName = function(nameValue) {
 			}
 		}
 
-		console.log(sorted_name_data)
-		console.log(yearTotal)
-
 		if (yearTotal > 0) {
 			makeWords(sorted_name_data, yearTotal);
 
@@ -163,32 +158,35 @@ var searchSingleName = function(nameValue) {
 		}
 
 		$('.name_container').text(nameValue);
-
-
-
-
+		$('.years_container').text('from ' + date_min + ' to ' + date_max);
 	} 
 
 	else {
-		var just_this_year = getData(parseInt(nameValue), button_clicked, undefined);
-		var sorted_year_data = sortData(just_this_year);
-		console.log(sorted_year_data)
-		showData(sorted_year_data);
+		var currentName = $('.name_container').text();
+		var just_this_year;
+		var sorted_year_data;
 		var yearPersonList = [];
-		var yearTotal = 0;
-		for (person in current_data) {
-  			yearPersonList.push(sorted_year_data[person]);
-  			yearTotal += sorted_year_data[person][1];
-  		}
-		makeWords(yearPersonList, yearTotal);
+
+		console.log('string')
+		just_this_year = getNameData(parseInt(nameValue), button_clicked, currentName);
+		
+		yearPersonList[0] = just_this_year;
+  		// console.log(yearPersonList);
+		makeWords(yearPersonList, just_this_year[1]);
+		showNameData(yearPersonList);
 
 		$("#slider").dateRangeSlider("values", new Date(parseInt(nameValue), 01, 01), new Date(parseInt(nameValue), 01, 01));
-
+		
+		$('.name_container').text(currentName);
+		$('.years_container').text(nameValue);
 	}
 	
 }
 
 var searchName = function() {
+	console.log('searchName')
+	console.log(date_min);
+	console.log(date_max);
 	var nameToSearch = $('.fname').val();
 	searchSingleName(nameToSearch);
 	$('.display_options').show();
