@@ -1,15 +1,48 @@
 body {
 	font-family: "Raleway", serif !important;
+	background-color: #dfdfdf;
+}
+
+.title_container {
+	width: 30%;
+}
+.title {
+	text-align: center;
+	border-bottom: 1px;
+	width: 100%;
+	margin: 0 0 0 10px;
+	font-size: 36px;
+	background-color: #FFFF99;
+	height: auto;
+	z-index: 10;
+	border-radius: 50%;
+	padding: 30px 0;
+	font-family: 'Homemade Apple', cursive;
+	float: left;
+}
+
+.make_changes {
+	text-align: center;
 }
 
 .controls_wrapper {
-	width: 80%;
-	margin: 0 auto;
+	width: 65%;
+	margin: -200px auto 0;
+	height: 0;
+	overflow-y: hidden;
+	float: right;
+}
+
+#slider {
+	display: block;
 }
 .gender_buttons,
 .display_options {
-	width: 50%;
 	margin: 10px auto;
+}
+
+.gender_buttons {
+	width: 50%;
 
 }
 
@@ -20,7 +53,6 @@ body {
 
 .gender_buttons a {
 	color: black;
-
 }
 
 .gender_buttons a div,
@@ -35,17 +67,14 @@ body {
 	margin: 20px;
 }
 
-.display_options {
-	display: none;
-}
-
 .data_container div {
 	margin: 10px 0;
 }
 
 .cloud_container {
 	margin: 0 auto;
-	width: 95%;
+	width: 100%;
+	float: left;
 }
 
 .form_container {
@@ -57,7 +86,15 @@ body {
 .name_container {
 	text-align: center;
 	font-size: 40px;
-	margin: 20px 0 0;
+	float: left;
+	width: 100%;
+}
+
+.years_container {
+	text-align: center;
+	float: left;
+	width: 100%;
+	margin: 0 0 20px 0;
 }
 
 
@@ -82,21 +119,45 @@ div.ui-rangeSlider-bar {
 	background-color: #9CDAEF;
 }
 
+#save {
+	text-align: center;
+}
+
 /* word cloud css */
 
 svg {
 	margin: 0 auto;
-	width: 100%;
-	height: 200%;
-	zoom: 1;
+	display: block;
+	padding: 10px;
+	background-color: white;
+	border-radius: 30%;
 }
 
 svg text {
 	font-family: cursive !important;
 }
 
-text:hover {
+/*text:hover {
 	font-size: 50px !important;
 	padding: 10px !important;
+}*/
+
+@media(max-width: 960px) {
+	svg {
+		width: 600 !important;
+		height: 300 !important;
+
+	}
+
+	g {
+		-ms-transform: translate(300px,150px); /* IE 9 */
+   		-webkit-transform: translate(300px,150px); /* Safari */
+    	transform: translate(300px,150px);;
+	}
+
+	text {
+		font-size: 10px !important;
+		padding: 0 !important;
+	}
 }
 

@@ -1,3 +1,14 @@
+var textHover = function(){
+	$('text').hover(
+		function(){
+			var currentSize = $(this).css('font-size');
+			$(this).css('font-size', (currentSize.split('p')[0]*2).toString() + 'px');
+		}, function(){
+			var newSize = $(this).css('font-size');
+			$(this).css('font-size', (newSize.split('p')[0]/2).toString() + 'px');
+		})
+};
+
 var getData = function(year, gender, name) {
 	var currentData = [];
 	var ladies = yearData['yob' + year.toString()]['female'];
@@ -34,9 +45,11 @@ var getNameData = function(year, gender, name) {
 			nameData = [year.toString(), yearData['yob' + year.toString()]['male'][name]]
 		}
 
-		else {
-			nameData = [year.toString(), undefined]
-		}
+		// make sure this is not causing other issues
+		// else {
+		// 	// nameData = [year.toString(), undefined]
+		// 	continue
+		// }
 
 	}
 	else {
@@ -70,12 +83,14 @@ var nameRangeData = function(start, year_diff, date_min, gender, name) {
 
 	while(start < year_diff) {
 		var this_year = getNameData((parseInt(date_min) + start), gender, name);
-		name_year_data.push(this_year)
+		if (this_year.length > 0) {
+			name_year_data.push(this_year)
+		}
 
 		start++
 	}
-	return name_year_data
 
+	return name_year_data
 }
 
 var sortData = function(data_dict) {
@@ -92,7 +107,7 @@ var sortData = function(data_dict) {
 	    return second[1] - first[1];
 	});
 
-	return items.slice(0, 500);
+	return items.slice(0, 250);
 }
 
 var sortNameData = function(name_data) {
@@ -100,6 +115,7 @@ var sortNameData = function(name_data) {
 	name_data.sort(function(first, second) {
 	    return second[1] - first[1];
 	});
+	// console.log(name_data);
 
 	return name_data;
 }
@@ -115,6 +131,7 @@ var showData = function(sortedData){
 
 var showNameData = function(sortedData){
 	$('.data_container').empty();
+	console.log('haiii');
 	var count = 1;
 	for (item in sortedData) {
 		if (sortedData[item][1] === undefined) {
@@ -129,12 +146,15 @@ var showNameData = function(sortedData){
 }
 
 var searchSingleName = function(nameValue) {
+	console.log(nameValue);
 	if (isNaN(parseInt(nameValue))) {
 		console.log('hai');
-		$("#slider").dateRangeSlider("values", new Date(parseInt(date_min), 01, 01), new Date(parseInt(date_max), 01, 01));
-
+		// $("#slider").dateRangeSlider("values", new Date(parseInt(date_min), 01, 01), new Date(parseInt(date_max), 01, 01));
+		date_min = $.format.date($('#slider').dateRangeSlider("values").min, 'yyyy');
+		date_max = $.format.date($('#slider').dateRangeSlider("values").max, 'yyyy');
 		var year_diff = (date_max - date_min) +1;
-		var name_all_data = nameRangeData(0, year_diff, parseInt(date_min), button_clicked, nameValue);
+		var name_all_data = nameRangeData(0, year_diff, parseInt(date_min), 'both', nameValue);
+		// console.log(name_all_data);
 		var sorted_name_data = sortNameData(name_all_data);
 		showNameData(sorted_name_data);
 
@@ -148,7 +168,8 @@ var searchSingleName = function(nameValue) {
 				sorted_name_data.splice([year], 1)
 			}
 		}
-
+		console.log("yearTotal")
+		console.log(yearTotal)
 		if (yearTotal > 0) {
 			makeWords(sorted_name_data, yearTotal);
 
@@ -180,6 +201,8 @@ var searchSingleName = function(nameValue) {
 		$('.name_container').text(currentName);
 		$('.years_container').text(nameValue);
 	}
+
+	textHover();
 	
 }
 
@@ -191,5 +214,6 @@ var searchName = function() {
 	searchSingleName(nameToSearch);
 	$('.display_options').show();
 }
+
 
 
